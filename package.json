@@ -1,9 +1,14 @@
 {
   "name": "@d10221/novnc",
   "version": "0.1.0",
-  "description": "Serves novnc with websokkify & express",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Serves novnc with websockify & express",
+  "main": "index.js", 
+  "bin": {
+    "novnc": "./bin/novnc"
+  },
+  "keywords": [
+
+  ],
   "dependencies": {
     "@novnc/novnc": "^1.0.0",
     "debug": "^4.0.1",
@@ -18,12 +23,11 @@
     "url": "git://github.com/d10221/novnc.git"
   },
   "files": [
-    "../../docs/LICENSE.LGPL-3",
-    "websockify.js"
+    "src/*",
+    "index.js",
+    "bin/*",
+    "public/*"
   ],
-  "bin": {
-    "websockify": "./websockify.js"
-  },
   "engines": {
     "node": ">=10.11.0"
   }

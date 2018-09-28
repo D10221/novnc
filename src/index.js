@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const debug = require("debug")("@d10221/novnc");
 const createServer = require("./create-server");
 const WebSocketServer = require("ws").Server;
@@ -24,6 +23,7 @@ app.use(
   "/novnc",
   express.static(resolve(__dirname, "..", "node_modules/@novnc/novnc")),
 );
+
 /** Start */
 const server = createServer(app);
 server.listen(source.port, function onListen() {

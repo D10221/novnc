@@ -5,21 +5,32 @@ Joel Martin <github@martintribe.org> (http://github.com/kanaka)
 
 Serves noVNC/lite with express while proxying ws://... to VNC-server
 
+usage:
 
-usage: 
-
-1. Vnc server must be running
+1.  Vnc server must be running
 
         # sudo apt install tightvncserver
         # vncserver :1
-    
-2. Install and run this thing...
+
+2.  Install and run this thing...
 
         # git clone https://github.com/D10221/novnc
         # yarn install
-        # cd novnc && node . localhost:6080 localhost:5901 
+        # cd novnc && node . localhost:6080 localhost:5901
 
-3. Open in Browser
+3.  Open in Browser
 
         # firefox http://localhost:6080
+
+Args:
+
+         [source_addr:]source_port [target_addr:]target_port [--webRoot web_dir] [--cert cert.pem [--key key.pem]]
+
+1st and 2nd Args , required "[host]:port"  
+--webRoot is optional defaults to `/public`  
+--cert can be pem/key combined, making --key optional
+
+Enable "debug" namespace:
+
+        DEBUG=@d10221* node .
 
