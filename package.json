@@ -1,0 +1,30 @@
+{
+  "name": "@d10221/novnc",
+  "version": "0.1.0",
+  "description": "Serves novnc with websokkify & express",
+  "main": "index.js",
+  "keywords": [],
+  "dependencies": {
+    "@novnc/novnc": "^1.0.0",
+    "debug": "^4.0.1",
+    "express": "^4.16.3",
+    "minimist": "^1.2.0",
+    "ws": "^6.0.0"
+  },
+  "author": "D10221 <d10221@australis-technica.com> (http://github.com/d10221)",
+  "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/d10221/novnc.git"
+  },
+  "files": [
+    "../../docs/LICENSE.LGPL-3",
+    "websockify.js"
+  ],
+  "bin": {
+    "websockify": "./websockify.js"
+  },
+  "engines": {
+    "node": ">=10.11.0"
+  }
+}
