@@ -8,4 +8,18 @@ Serves noVNC/lite with express while proxying ws://... to VNC-server
 
 usage: 
 
-    node . [source_addr:]source_port [target_addr:]target_port [--webRoot web_dir] [--cert cert.pem [--key key.pem]]
+1. Vnc server must be running
+
+        # sudo apt install tightvncserver
+        # vncserver :1
+    
+2. Install and run this thing...
+
+        # git clone https://github.com/D10221/novnc
+        # yarn install
+        # cd novnc && node . localhost:6080 localhost:5901 
+
+3. Open in Browser
+
+        # firefox http://localhost:6080
+
