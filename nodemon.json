@@ -1,0 +1,17 @@
+{
+    "ignore": [
+        "node_modules/**/node_modules"        
+    ],
+    "verbose": true,
+    "execMap": {
+        "js": "node --inspect ."
+    },
+    "watch": [
+        "server/"
+    ],
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "ext": "ts,tsx,js,jsx",
+    "delay": 5000
+}

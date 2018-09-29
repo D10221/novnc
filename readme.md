@@ -22,11 +22,20 @@ usage:
 
         # firefox http://localhost:6080
 
-Args:
+Help:
 
-         [source_addr:]source_port [target_addr:]target_port [--webRoot web_dir] [--cert cert.pem [--key key.pem]]
+        Usage: 
+          novnc <[<SOURCE_ADDR>:]<SOURCE_PORT>> <[<TARGET_ADDR>:]<TARGET_PORT>>
 
-1st and 2nd Args , required "[host]:port"  
+        Alt:
+          SOURCE=localhost:6080 TARGET=localhost:5901 node .
+
+        Options:
+          --webRoot </path/to/static/dir> 
+          --cert </path/to/cert.pem> 'cert || cert && key'
+          --key </path/to/key.pem>
+
+1st and 2nd Args, positional , required "[host]:port"  
 --webRoot is optional defaults to `/public`  
 --cert can be pem/key combined, making --key optional
 
