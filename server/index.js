@@ -46,7 +46,7 @@ try {
     };
   }
   /**
-   * display info id DEBUG= enabled
+   * display info if DEBUG= enabled
    */
   function success() {
     debug(info({ source, target, webRoot, cert, key }));
