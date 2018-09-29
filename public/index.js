@@ -110,3 +110,5 @@ rfb.addEventListener("desktopname", updateDesktopName);
 // Set parameters that can be changed on an active connection
 rfb.viewOnly = readQueryVariable("view_only", false);
 rfb.scaleViewport = readQueryVariable("scale", false);
+
+// navigator.serviceWorker.register('service-worker.js');
