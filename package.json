@@ -2,12 +2,17 @@
   "name": "@d10221/novnc",
   "version": "0.1.0",
   "description": "Serves novnc with websockify & express",
-  "main": "index.js", 
+  "main": "index.js",
   "bin": {
     "novnc": "./bin/novnc"
   },
   "keywords": [
-
+    "js",
+    "vnc",
+    "browser",
+    "node",
+    "websockets",
+    "node"
   ],
   "dependencies": {
     "@novnc/novnc": "^1.0.0",
