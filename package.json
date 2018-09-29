@@ -37,7 +37,7 @@
     "node": ">=10.11.0"
   },
   "scripts": {
-    "start": "mode .",
-    "dev": "nodemon"
+    "start": "NODE_ENV=production node .",
+    "dev": "NODE_ENV=development DEBUG=@d10221/novnc* nodemon :6080 :5901 --cert=~/.ssl/self.pem"
   }
 }
