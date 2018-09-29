@@ -1,60 +1,62 @@
 const express = require("express");
 const { resolve } = require("path");
 const WebSocketServer = require("ws").Server;
-const { source, target, webRoot, cert } = require("./config");
-const createServer = require("./create-server");
+const Debug = require("debug");
+const CreateServer = require("./create-server");
 const pkg = require("../package.json");
 const WsClient = require("./ws-client");
-const debug = require("debug")(pkg.name);
+const help = require("./help");
+const argv = require("./argv");
+const info = require("./info");
+
+const debug = Debug(pkg.name);
+const { source, target, webRoot, cert, key } = require("./config");
+
+if (argv.help || argv.h || argv["?"]) {
+  console.log(help(pkg));
+  process.exit();
+}
 
 /** Validate config */
 if (!source.host || !source.port || !target.host || !target.port) {
   debug("config: ", source, target);
-  console.log(
-    `${pkg.name} version v${pkg.version}
-Usage: 
-\t novnc <[<SOURCE_ADDR>:]<SOURCE_PORT>> <[<TARGET_ADDR>:]<TARGET_PORT>>
-
-Alt:
-\tSOURCE=localhost:6080 TARGET=localhost:5901 node .
-
-Options:
-\t--webRoot </path/to/static/dir> 
-\t--cert </path/to/cert.pem> 'cert || cert && key'
-\t--key </path/to/key.pem>
-  `,
-  );
+  console.log(help(pkg));
   process.exit(-1);
 }
 
-/**
- * Serve Client
- */
-const app = express();
-app.use("/", express.static(webRoot));
-app.use(
-  "/novnc",
-  express.static(resolve(__dirname, "..", "node_modules/@novnc/novnc")),
-);
-
-const server = createServer(app);
-
-function onListen() {
-  const wsServer = new WebSocketServer({ server });
-  wsServer.on("connection", WsClient(target.host, target.port));
-  debug(
-    [
-      `proxying from ${source.host}:${source.port} to ${target.host}:${
-        target.port
-      }`,
-      webRoot && `Web server: Serving: ${webRoot}`,
-      (cert && `Running in HTTPS (wss://) mode using: ${cert}, ${key}`) ||
-      `Running in unencrypted HTTP (ws://) mode`,
-    ]
-    .filter(x => x)
-    .join("\n"),
+try {
+  /**
+   * Serve Client
+   */
+  const handler = express()
+    .use("/", express.static(webRoot))
+    .use(
+      "/novnc",
+      express.static(resolve(__dirname, "..", "node_modules/@novnc/novnc")),
     );
+  /**
+   * Start Websocket Proxy
+   * @param {Function} success
+   */
+  function onListen(onSuccess) {
+    return function listening() {
+      const wsServer = new WebSocketServer({ server: this });
+      wsServer.on("connection", WsClient(target.host, target.port));
+      onSuccess && success();
+    };
   }
-  
-  /** Start */
-  server.listen(source.port, onListen);
+  /**
+   * display info id DEBUG= enabled
+   */
+  function success() {
+    debug(info({ source, target, webRoot, cert, key }));
+  }
+  /**
+   * Create & start server
+   */
+  CreateServer(cert, key)(handler).listen(source.port, onListen(success));
+} catch (error) {
+  debug(error);
+  console.log(help(pkg));
+  process.exit(-1);
+}
