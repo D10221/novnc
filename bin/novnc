@@ -2,4 +2,4 @@
 
 // TODO:  launch vncserver ...
 
-require("../);
+require("../");
