@@ -37,7 +37,7 @@ function resolve(filePath) {
 module.exports = {
   source: getArgs(argv._[0] || process.env.SOURCE || ""),
   target: getArgs(argv._[1] || process.env.TARGET || ""),
-  webRoot: argv.webRoot || "./public",
+  webRoot: argv.webRoot || "../public",
   cert: resolve(argv.cert),
   key: resolve(argv.key),
 };

@@ -29,7 +29,7 @@ try {
    * Serve Client
    */
   const handler = express()
-    .use("/", express.static(webRoot))
+    .use("/", express.static(resolve(__dirname, webRoot)))
     .use(
       "/novnc",
       express.static(resolve(__dirname, "..", "node_modules/@novnc/novnc")),
