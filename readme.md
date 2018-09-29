@@ -43,3 +43,14 @@ Enable "debug" namespace:
 
         DEBUG=@d10221* node .
 
+Extra:
+
+        # re-start vncserver with default display :1 
+        # Warn: cp /etc/ssl/private/ssl-cert-snakeoil.key
+        # to where you can read it to avoid needing sudo
+
+        DEBUG=@d10221* ./bin/novnc 6080 5901 \
+        --cert=/etc/ssl/certs/ssl-cert-snakeoil.pem \
+        --key=~/.ssl/ssl-cert-snakeoil.key
+
+

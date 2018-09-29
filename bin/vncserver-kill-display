@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+/**
+ *
+ * Kill default display
+ */
+
+const spawnCmd = require("../util/spawn-cmd");
+const runCmd = require("../util/run-cmd");
+
+function findDisplay(regex) {
+  return result => {
+    const r = regex.exec(result);
+    return r && r.length && r[1];
+  };
+}
+
+function killDisplay(display) {
+  parseInt(display, 10) && spawnCmd("vncserver", ["-kill", `:${display}`]);
+}
+
+runCmd("ps x")
+  .then(findDisplay(/\sX.*vnc\s+:(\d+)/i))
+  .then(killDisplay)
+  .catch(error => {
+    console.error(error);
+    process.exit(-1);
+  });

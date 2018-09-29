@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+/**
+ *
+ * Start default display
+ */
+
+const spawnCmd = require("../util/spawn-cmd");
+
+// TODO use config/env/args...?
+spawnCmd("vncserver", [
+  "-localhost",
+  ...["-geometry", "1920x968"],
+  "-alwaysshared",
+  ...["-name", "uno"],
+]);
