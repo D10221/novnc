@@ -53,4 +53,8 @@ Extra:
         --cert=/etc/ssl/certs/ssl-cert-snakeoil.pem \
         --key=~/.ssl/ssl-cert-snakeoil.key
 
+Extra2:
+
+        # Kills default display & start default display  & start novnc
+        $ bin/novnc
 
