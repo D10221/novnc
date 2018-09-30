@@ -1,114 +1,133 @@
 // RFB holds the API to connect and communicate with a VNC server
 import RFB from "/novnc/core/rfb.js";
 
-let rfb;
-let desktopName;
-
-// When this function is called we have
-// successfully connected to a server
-function connectedToServer(e) {
-  status("Connected to " + desktopName);
+function getUrl() {
+  const host = fromQueryOrDefault("host", window.location.hostname);
+  const port = fromQueryOrDefault("port", window.location.port);
+  const path = fromQueryOrDefault("path", "websockify");
+  const protocol = (window.location.protocol === "https:" && "wss") || "ws";
+  // Build the websocket URL used to connect
+  const url = `${protocol}://${host}${port && `:${port}`}/${path}`;
+  return url;
 }
 
-// This function is called when we are disconnected
-function disconnectedFromServer(e) {
-  if (e.detail.clean) {
-    status("Disconnected");
-  } else {
-    status("Something went wrong, connection is closed");
+class NoVnc {
+  constructor(
+    password,
+    url,
+    viewOnly,
+    scaleViewport,
+    desktopName,
+    debugEnabled,
+  ) {
+    this.viewOnly = viewOnly;
+    this.scaleViewport = scaleViewport;
+    this.desktopName = desktopName;
+    /** @type {RFB} */
+
+    this.debugEnabled = debugEnabled;
+
+    
+    this.log = this.log.bind(this);
+    this.onConnect = this.onConnect.bind(this);
+    this.onCredentialsRequired = this.onCredentialsRequired.bind(this);
+    this.onDesktopname = this.onDesktopname.bind(this);
+    this.onDisconnect = this.onDisconnect.bind(this);
+    this.onSecurityFailure = this.onSecurityFailure.bind(this);
+    this.status = this.status.bind(this);
+    
+    this.status("Connecting");
+    // Creating a new RFB object will start a new connection
+    const rfb = new RFB(document.getElementById("screen"), url, {
+      credentials: { password: password },
+    });
+    // Set parameters that can be changed on an active connection
+    rfb.viewOnly = this.viewOnly;
+    rfb.scaleViewport = this.scaleViewport;
+    // Add listeners to important events from the RFB module
+    rfb.addEventListener("connect", this.onConnect);
+    rfb.addEventListener("disconnect", this.onDisconnect);
+    rfb.addEventListener("credentialsrequired", this.onCredentialsRequired);
+    rfb.addEventListener("securityfailure", this.onSecurityFailure);
+    rfb.addEventListener("desktopname", this.onDesktopname);
+    this.rfb = rfb;
+  }
+  /**
+   * When this function is called we have successfully connected to a server
+   */
+  onConnect(e) {
+    this.log("connect");
+    this.status("Connected to " + this.desktopName);
+  }
+
+  /** */
+  onDisconnect(e) {
+    log("disconnect");
+    if (e.detail.clean) {
+      this.status("Disconnected");
+    } else {
+      this.status("Something went wrong, connection is closed");
+    }
+  }
+  /** */
+  onCredentialsRequired(e) {
+    let _ = this;
+    const { detail } = e;
+    if (detail.types.indexOf("password") !== -1) {
+      _.password = prompt("Password Required:");
+      _.rfb.sendCredentials({ password: this.password });
+    }
+  }
+  /** */
+  onSecurityFailure(e) {
+    const { detail } = e;
+    const { reason, status } = detail;
+    log("securityfailure", detail);
+  }
+  /** */
+  onDesktopname(e) {
+    this.desktopName = e.detail.name;
+  }
+
+  log(...args) {
+    this.debugEnabled && console.log(...args);
+  }
+
+  status(text) {
+    document.title = `VNC: ${text}`;
   }
 }
 
-// When this function is called, the server requires
-// credentials to authenticate
-function credentialsAreRequired(e) {
-  const password = prompt("Password Required:");
-  rfb.sendCredentials({ password: password });
-}
-
-// When this function is called we have received
-// a desktop name from the server
-function updateDesktopName(e) {
-  desktopName = e.detail.name;
-}
-
-// Since most operating systems will catch Ctrl+Alt+Del
-// before they get a chance to be intercepted by the browser,
-// we provide a way to emulate this key sequence.
-function sendCtrlAltDel() {
-  rfb.sendCtrlAltDel();
-  return false;
-}
-
-// Show a status text in the top bar
-function status(text) {
-  document.getElementById("status").textContent = text;
-}
-
-// This function extracts the value of one variable from the
 // query string. If the variable isn't defined in the URL
 // it returns the default value instead.
-function readQueryVariable(name, defaultValue) {
-  // A URL with a query parameter can look like this:
-  // https://www.example.com?myqueryparam=myvalue
-  //
+function fromQueryOrDefault(name, defaultValue) {
   // Note that we use location.href instead of location.search
   // because Firefox < 53 has a bug w.r.t location.search
-  const re = new RegExp(".*[?&]" + name + "=([^&#]*)"),
-    match = document.location.href.match(re);
-  if (typeof defaultValue === "undefined") {
-    defaultValue = null;
-  }
+  const re = new RegExp(".*[?&]" + name + "=([^&#]*)");
 
+  const match = document.location.href.match(re);
   if (match) {
     // We have to decode the URL since want the cleartext value
     return decodeURIComponent(match[1]);
   }
 
+  if (typeof defaultValue === "undefined") {
+    return null;
+  }
   return defaultValue;
 }
 
-document.getElementById("sendCtrlAltDelButton").onclick = sendCtrlAltDel;
-
-// Read parameters specified in the URL query string
-// By default, use the host and port of server that served this file
-const host = readQueryVariable("host", window.location.hostname);
-let port = readQueryVariable("port", window.location.port);
-const password = readQueryVariable("password", "");
-const path = readQueryVariable("path", "websockify");
-
-// | | |         | | |
-// | | | Connect | | |
-// v v v         v v v
-
-status("Connecting");
-
-// Build the websocket URL used to connect
-let url;
-if (window.location.protocol === "https:") {
-  url = "wss";
-} else {
-  url = "ws";
-}
-url += "://" + host;
-if (port) {
-  url += ":" + port;
-}
-url += "/" + path;
-
-// Creating a new RFB object will start a new connection
-rfb = new RFB(document.getElementById("screen"), url, {
-  credentials: { password: password },
+document.addEventListener("keyup", e => {
+  log("keyup ", e);
 });
 
-// Add listeners to important events from the RFB module
-rfb.addEventListener("connect", connectedToServer);
-rfb.addEventListener("disconnect", disconnectedFromServer);
-rfb.addEventListener("credentialsrequired", credentialsAreRequired);
-rfb.addEventListener("desktopname", updateDesktopName);
-
-// Set parameters that can be changed on an active connection
-rfb.viewOnly = readQueryVariable("view_only", false);
-rfb.scaleViewport = readQueryVariable("scale", false);
+window.$NoVnc = new NoVnc(
+  /* password: */ fromQueryOrDefault("password", ""), //
+  /* url: */ getUrl(), //
+  /* viewOnly: */ fromQueryOrDefault("view_only", false), //
+  /* scaleViewport: */ fromQueryOrDefault("scale", false),
+  /* desktopName: */ "",
+  /* debugEnabled: */ localStorage.getItem("$DEBUG") === "enabled",
+);
 
 // navigator.serviceWorker.register('service-worker.js');
