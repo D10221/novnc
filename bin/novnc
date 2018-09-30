@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-const path = require("path");
-const spawnCmd = require("../util/spawn-cmd");
 
 Promise.all([
-  spawnCmd(path.resolve(__dirname, "./vncserver-kill-display")),
-  spawnCmd(path.resolve(__dirname, "./vncserver-start")),
+  require("./vncserver-kill-display"),
+  require("./vncserver-start"),
 ])
   .then(() => require("../"))
   .catch(err => {

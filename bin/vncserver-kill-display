@@ -8,19 +8,31 @@
 const spawnCmd = require("../util/spawn-cmd");
 const runCmd = require("../util/run-cmd");
 
-function findDisplay(regex) {
-  return result => {
-    const r = regex.exec(result);
-    return r && r.length && r[1];
-  };
-}
+const xtightvncRegex = /\sX.*vnc\s+:(\d+)/i;
 
+/**
+ *
+ * @param stdout {string}
+ * @returns {string}
+ */
+function findDisplay(stdout) {
+  const r = xtightvncRegex.exec(stdout);
+  return r && r.length && r[1];
+}
+/**
+ *
+ * @param display
+ */
 function killDisplay(display) {
-  parseInt(display, 10) && spawnCmd("vncserver", ["-kill", `:${display}`]);
+  return (
+    (parseInt(display, 10) &&
+      spawnCmd("vncserver", ["-kill", `:${display}`])) ||
+    Promise.resolve()
+  );
 }
 
-runCmd("ps x")
-  .then(findDisplay(/\sX.*vnc\s+:(\d+)/i))
+module.exports = runCmd("ps x")
+  .then(findDisplay)
   .then(killDisplay)
   .catch(error => {
     console.error(error);

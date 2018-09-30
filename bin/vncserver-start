@@ -8,7 +8,7 @@
 const spawnCmd = require("../util/spawn-cmd");
 
 // TODO use config/env/args...?
-spawnCmd("vncserver", [
+module.exports = spawnCmd("vncserver", [
   "-localhost",
   ...["-geometry", "1920x968"],
   "-alwaysshared",
