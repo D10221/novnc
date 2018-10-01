@@ -34,12 +34,17 @@ class NoVnc {
     this.onDesktopname = this.onDesktopname.bind(this);
     this.onDisconnect = this.onDisconnect.bind(this);
     this.onSecurityFailure = this.onSecurityFailure.bind(this);
-    this.status = this.status.bind(this);
-    
-    this.status("Connecting");
+    this.status = this.status.bind(this);   
+    this.connect = this.connect.bind(this);
     // Creating a new RFB object will start a new connection
+    this.password = password;
+    this.connect(url);
+  }
+
+  connect(url = getUrl()) {
+    this.status("Connecting");
     const rfb = new RFB(document.getElementById("screen"), url, {
-      credentials: { password: password },
+      credentials: { password: this.password },
     });
     // Set parameters that can be changed on an active connection
     rfb.viewOnly = this.viewOnly;
@@ -52,6 +57,7 @@ class NoVnc {
     rfb.addEventListener("desktopname", this.onDesktopname);
     this.rfb = rfb;
   }
+
   /**
    * When this function is called we have successfully connected to a server
    */
@@ -62,7 +68,7 @@ class NoVnc {
 
   /** */
   onDisconnect(e) {
-    log("disconnect");
+    this.log("disconnect");
     if (e.detail.clean) {
       this.status("Disconnected");
     } else {
@@ -82,7 +88,7 @@ class NoVnc {
   onSecurityFailure(e) {
     const { detail } = e;
     const { reason, status } = detail;
-    log("securityfailure", detail);
+    this.log("securityfailure", detail);
   }
   /** */
   onDesktopname(e) {
