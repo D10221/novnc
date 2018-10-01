@@ -1,67 +1,85 @@
 const debug = require("debug")("@d10221/novnc/websocket-client");
 const net = require("net");
+const WebSocketServer = require("ws").Server;
 /**
- * 
- * @param {string} target_host 
- * @param {number} target_port 
+ *
+ * @param {string} target_host
+ * @param {number} target_port
+ * @param {import("http").Server|import("https").Server} server
  * @description Create WsClient
  */
-module.exports = function WsClient(target_host, target_port) {
+module.exports = function WsClient(target_host, target_port, server) {
+  const wsServer = new WebSocketServer({ server });
 
-  return function wsClient(client) {
-
-    var clientAddr = client._socket.remoteAddress;
+  /**
+   * @param {import("ws")} ws
+   *  */
+  function onConnection(ws) {
+    
+    var clientAddr = ws._socket.remoteAddress;
 
     function log(msg) {
       debug(` ${clientAddr}: ${msg}`);
     }
     log("WebSocket connection");
-    log(`Version: ${client.protocolVersion}, subprotocol: ${client.protocol}`);
+    log(`Version: ${ws.protocolVersion}, subprotocol: ${ws.protocol}`);
 
-    var target = net.createConnection(target_port, target_host, function() {
-      log("connected to target");
-    });
-
-    target.on("data", (data) => {      
+    function onData(data) {
       try {
-        if (client.protocol === "base64") {
-          client.send(new Buffer(data).toString("base64"));
+        if (ws.protocol === "base64") {
+          ws.send(new Buffer(data).toString("base64"));
         } else {
-          client.send(data, { binary: true });
+          ws.send(data, { binary: true });
         }
       } catch (e) {
         log("Client closed, cleaning up target");
         target.end();
       }
-    });
-
-    target.on("end", () => {
+    }
+    function onEnd() {
       log("target disconnected");
-      client.close();
-    });
+      ws.close();
+    }
 
-    target.on("error", () => {
+    function onError() {
       log("target connection error");
       target.end();
-      client.close();
+      ws.close();
+    }
+
+    var target = net.createConnection(target_port, target_host, function() {
+      log("connected to target");
     });
 
-    client.on("message", msg => {
-      if (client.protocol === "base64") {
+    function onMessage(msg) {
+      if (ws.protocol === "base64") {
         target.write(new Buffer(msg, "base64"));
       } else {
         target.write(msg, "binary");
       }
-    });
-
-    client.on("close", (code, reason) => {
+    }
+    function onClose(code, reason) {
       log(`WebSocket client disconnected: ${code} [${reason}]`);
       target.end();
-    });
+    }
 
-    client.on("error", a => {
+    function onWsError(a) {
       log(`WebSocket client error: ${a}`);
       target.end();
-    });
-  };
+    }
+
+    target.on("data", onData);
+
+    target.on("end", onEnd);
+
+    target.on("error", onError);
+
+    ws.on("message", onMessage);
+
+    ws.on("close", onClose);
+
+    ws.on("error", onWsError);
+  }
+
+  wsServer.on("connection", onConnection);
 };

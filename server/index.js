@@ -1,6 +1,5 @@
 const express = require("express");
 const { resolve } = require("path");
-const WebSocketServer = require("ws").Server;
 const Debug = require("debug");
 const CreateServer = require("./create-server");
 const pkg = require("../package.json");
@@ -40,8 +39,7 @@ try {
    */
   function onListen(onSuccess) {
     return function listening() {
-      const wsServer = new WebSocketServer({ server: this });
-      wsServer.on("connection", WsClient(target.host, target.port));
+      WsClient(target.host, target.port, this);     
       onSuccess && success();
     };
   }
