@@ -1,4 +1,4 @@
-const debug = require("debug")("@d10221/novnc/websocket-client");
+const debug = require("debug")("@d10221/novnc/ws-client");
 const net = require("net");
 const WebSocketServer = require("ws").Server;
 /**
@@ -11,18 +11,15 @@ const WebSocketServer = require("ws").Server;
 module.exports = function WsClient(target_host, target_port, server) {
   const wsServer = new WebSocketServer({ server });
 
-  /**
-   * @param {import("ws")} ws
-   *  */
-  function onConnection(ws) {
-    
-    var clientAddr = ws._socket.remoteAddress;
+  function connect(ws) {
 
     function log(msg) {
-      debug(` ${clientAddr}: ${msg}`);
+      debug(`${ws._socket.remoteAddress}: ${msg}`);
     }
-    log("WebSocket connection");
-    log(`Version: ${ws.protocolVersion}, subprotocol: ${ws.protocol}`);
+
+    const target = net.createConnection(target_port, target_host, function() {
+      log("connected to target %s,%s", target_host, target_host);
+    });
 
     function onData(data) {
       try {
@@ -36,20 +33,42 @@ module.exports = function WsClient(target_host, target_port, server) {
         target.end();
       }
     }
-    function onEnd() {
-      log("target disconnected");
-      ws.close();
-    }
 
-    function onError() {
-      log("target connection error");
+    function onError(e) {
+      log("target connection error", e);
       target.end();
       ws.close();
     }
 
-    var target = net.createConnection(target_port, target_host, function() {
-      log("connected to target");
-    });
+    function onEnd() {
+      log("target disconnected");
+      ws.close();
+      target.removeListener("data", onData);
+      target.removeListener("error", onData);
+      target.removeListener("end", onData);
+    }
+
+    target.on("data", onData);
+    target.on("error", onError);
+    target.on("end", onEnd);
+
+    return target;
+  }
+
+  /**
+   * @param {import("ws")} ws
+   *  */
+  function onConnection(ws) {
+
+    const target = connect(ws);
+
+    var clientAddr = ws._socket.remoteAddress;
+
+    function log(msg) {
+      debug(`${clientAddr}: ${msg}`);
+    }
+
+    log(`ws connection (${ws.protocol})`);
 
     function onMessage(msg) {
       if (ws.protocol === "base64") {
@@ -61,24 +80,19 @@ module.exports = function WsClient(target_host, target_port, server) {
     function onClose(code, reason) {
       log(`WebSocket client disconnected: ${code} [${reason}]`);
       target.end();
+      ws.removeListener("message", onMessage);
+      ws.removeListener("onClose", onClose);
+      ws.removeListener("error", onError);
     }
 
-    function onWsError(a) {
+    function onError(a) {
       log(`WebSocket client error: ${a}`);
-      target.end();
+      target.end();    
     }
-
-    target.on("data", onData);
-
-    target.on("end", onEnd);
-
-    target.on("error", onError);
 
     ws.on("message", onMessage);
-
     ws.on("close", onClose);
-
-    ws.on("error", onWsError);
+    ws.on("error", onError);
   }
 
   wsServer.on("connection", onConnection);
