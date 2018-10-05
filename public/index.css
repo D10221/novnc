@@ -35,3 +35,14 @@ html {
     flex: 1; /* fill remaining space */
     overflow: hidden;
 }
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+.space-between {
+    justify-content: space-between
+}
+.flex-grow {
+    flex: 1 0;
+}

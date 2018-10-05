@@ -1,2 +1,2 @@
-export { default } from "./store";
-export { actions } from "./reducer";
+export { default } from "./store.js";
+export { actions } from "./reducer.js";
