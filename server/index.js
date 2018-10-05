@@ -1,5 +1,5 @@
 const express = require("express");
-const { resolve } = require("path");
+const { resolve, join } = require("path");
 const Debug = require("debug");
 const CreateServer = require("./create-server");
 const pkg = require("../package.json");
@@ -28,10 +28,15 @@ try {
    * Serve Client
    */
   const handler = express()
-    .use("/", express.static(resolve(__dirname, webRoot)))
-    .use(
-      "/novnc",
-      express.static(resolve(__dirname, "..", "node_modules/@novnc/novnc")),
+    .get("/*", express.static(resolve(__dirname, webRoot)))
+    .get(
+      "/node_modules/*",(req, res, next)=> {
+        try {
+          res.sendFile(join(__dirname, "..", req.path))
+        } catch (error) {
+          next(error)
+        }
+      }
     );
   /**
    * Start Websocket Proxy

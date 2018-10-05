@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    padding: 0;
     background-color: dimgrey;
     height: 100%;
     display: flex;
@@ -16,9 +17,11 @@ html {
     padding: 6px 5px 4px 5px;
     border-bottom: 1px outset;
 }
+
 #status {
     text-align: center;
 }
+
 #sendCtrlAltDelButton {
     position: fixed;
     top: 0px;

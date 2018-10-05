@@ -1,139 +1,71 @@
 // RFB holds the API to connect and communicate with a VNC server
-import RFB from "/novnc/core/rfb.js";
+import RFB from "./node_modules/@novnc/novnc/core/rfb.js";
+import { fromQueryOrDefault, getUrl } from "./util.js";
 
-function getUrl() {
-  const host = fromQueryOrDefault("host", window.location.hostname);
-  const port = fromQueryOrDefault("port", window.location.port);
-  const path = fromQueryOrDefault("path", "websockify");
-  const protocol = (window.location.protocol === "https:" && "wss") || "ws";
-  // Build the websocket URL used to connect
-  const url = `${protocol}://${host}${port && `:${port}`}/${path}`;
-  return url;
-}
+const password = fromQueryOrDefault("password", "");
+const url = getUrl();
+const viewOnly = fromQueryOrDefault("view_only", false);
+const scaleViewport = fromQueryOrDefault("scale", false);
+const debugEnabled = localStorage.getItem("$DEBUG") === "enabled";
+let desktopName = "";
 
-class NoVnc {
-  constructor(
-    password,
-    url,
-    viewOnly,
-    scaleViewport,
-    desktopName,
-    debugEnabled,
-  ) {
-    this.viewOnly = viewOnly;
-    this.scaleViewport = scaleViewport;
-    this.desktopName = desktopName;
-    /** @type {RFB} */
-
-    this.debugEnabled = debugEnabled;
-
-    
-    this.log = this.log.bind(this);
-    this.onConnect = this.onConnect.bind(this);
-    this.onCredentialsRequired = this.onCredentialsRequired.bind(this);
-    this.onDesktopname = this.onDesktopname.bind(this);
-    this.onDisconnect = this.onDisconnect.bind(this);
-    this.onSecurityFailure = this.onSecurityFailure.bind(this);
-    this.status = this.status.bind(this);   
-    this.connect = this.connect.bind(this);
-    // Creating a new RFB object will start a new connection
-    this.password = password;
-    this.connect(url);
-  }
-
-  connect(url = getUrl()) {
-    this.status("Connecting");
-    const rfb = new RFB(document.getElementById("screen"), url, {
-      credentials: { password: this.password },
-    });
-    // Set parameters that can be changed on an active connection
-    rfb.viewOnly = this.viewOnly;
-    rfb.scaleViewport = this.scaleViewport;
-    // Add listeners to important events from the RFB module
-    rfb.addEventListener("connect", this.onConnect);
-    rfb.addEventListener("disconnect", this.onDisconnect);
-    rfb.addEventListener("credentialsrequired", this.onCredentialsRequired);
-    rfb.addEventListener("securityfailure", this.onSecurityFailure);
-    rfb.addEventListener("desktopname", this.onDesktopname);
-    this.rfb = rfb;
-  }
-
-  /**
-   * When this function is called we have successfully connected to a server
-   */
-  onConnect(e) {
-    this.log("connect");
-    this.status("Connected to " + this.desktopName);
-  }
-
-  /** */
-  onDisconnect(e) {
-    this.log("disconnect");
-    if (e.detail.clean) {
-      this.status("Disconnected");
-    } else {
-      this.status("Something went wrong, connection is closed");
-    }
-  }
-  /** */
-  onCredentialsRequired(e) {
-    let _ = this;
-    const { detail } = e;
-    if (detail.types.indexOf("password") !== -1) {
-      _.password = prompt("Password Required:");
-      _.rfb.sendCredentials({ password: this.password });
-    }
-  }
-  /** */
-  onSecurityFailure(e) {
-    const { detail } = e;
-    const { reason, status } = detail;
-    this.log("securityfailure", detail);
-  }
-  /** */
-  onDesktopname(e) {
-    this.desktopName = e.detail.name;
-  }
-
-  log(...args) {
-    this.debugEnabled && console.log(...args);
-  }
-
-  status(text) {
-    document.title = `VNC: ${text}`;
-  }
-}
-
-// query string. If the variable isn't defined in the URL
-// it returns the default value instead.
-function fromQueryOrDefault(name, defaultValue) {
-  // Note that we use location.href instead of location.search
-  // because Firefox < 53 has a bug w.r.t location.search
-  const re = new RegExp(".*[?&]" + name + "=([^&#]*)");
-
-  const match = document.location.href.match(re);
-  if (match) {
-    // We have to decode the URL since want the cleartext value
-    return decodeURIComponent(match[1]);
-  }
-
-  if (typeof defaultValue === "undefined") {
-    return null;
-  }
-  return defaultValue;
-}
-
-document.addEventListener("keyup", e => {
-  log("keyup ", e);
+const rfb = new RFB(document.getElementById("screen"), url, {
+  credentials: { password },
 });
+// Set parameters that can be changed on an active connection
+rfb.viewOnly = viewOnly;
+rfb.scaleViewport = scaleViewport;
+// Add listeners to important events from the RFB module
+rfb.addEventListener("connect", onConnect);
+rfb.addEventListener("disconnect", onDisconnect);
+rfb.addEventListener("credentialsrequired", onCredentialsRequired);
+rfb.addEventListener("securityfailure", onSecurityFailure);
+rfb.addEventListener("desktopname", onDesktopname);
 
-window.$NoVnc = new NoVnc(
-  /* password: */ fromQueryOrDefault("password", ""), //
-  /* url: */ getUrl(), //
-  /* viewOnly: */ fromQueryOrDefault("view_only", false), //
-  /* scaleViewport: */ fromQueryOrDefault("scale", false),
-  /* desktopName: */ "",
-  /* debugEnabled: */ localStorage.getItem("$DEBUG") === "enabled",
-);
+/**
+ * When this function is called we have successfully connected to a server
+ */
+function onConnect(e) {
+  log("connect");
+  status("Connected to " + desktopName);
+}
+
+/** */
+function onDisconnect(e) {
+  log("disconnect");
+  if (e.detail.clean) {
+    status("Disconnected");
+  } else {
+    status("Something went wrong, connection is closed");
+  }
+}
+/** */
+function onCredentialsRequired(e) {
+  const { detail } = e;
+  if (detail.types.indexOf("password") !== -1) {
+    const password = prompt("Password Required:");
+    rfb.sendCredentials({ password });
+  }
+}
+/** */
+function onSecurityFailure(e) {
+  const { detail } = e;
+  const { reason, status } = detail;
+  log("securityfailure", detail);
+}
+/** */
+function onDesktopname(e) {
+  desktopName = e.detail.name;
+}
+
+function log(...args) {
+  debugEnabled && console.log(...args);
+}
+
+function status(text) {
+  document.title = `VNC: ${text}`;
+}
+
+window.$NoVnc = rfb;
 
 // navigator.serviceWorker.register('service-worker.js');

@@ -1,0 +1,1 @@
+export default function (api) { return next => action => next(action); }
