@@ -29,7 +29,7 @@ store.dispatch({ type: "!START" });
 
 rfb = Rfb({
   el: document.getElementById("screen"),
-  setState: actions.setState,
+  setState: (payload)=> store.dispatch(actions.setState(payload)),
   ...store.getState(),
 });
 
