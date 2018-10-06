@@ -1,11 +1,13 @@
 import { render } from "../node_modules/lit-html/lit-html.js";
-import store from "./store/index.js";
+import store, { actions } from "./store/index.js";
 import App from "./app.js";
 import Rfb from "./rfb.js";
 let rfb;
 
+/** user driver login */
 const sendCredentials = password => {
-   rfb.sendCredentials({ password });
+  store.dispatch(actions.loginCount())
+  rfb.sendCredentials({ password });
 };
 
 store.onChange(state => {
@@ -13,7 +15,10 @@ store.onChange(state => {
     `${state.connected ? "connected" : "disconnected"} ${state.desktopName ||
       ""}`,
   );
-  render(App({ ...state, sendCredentials }), document.body);
+  render(
+    App({ ...state, sendCredentials, setState: actions.setState }),
+    document.body,
+  );
 });
 
 function setTitle(text) {
@@ -24,10 +29,8 @@ store.dispatch({ type: "!START" });
 
 rfb = Rfb({
   el: document.getElementById("screen"),
-  setState: store.setState,
-  ...store.getState()
+  setState: actions.setState,
+  ...store.getState(),
 });
-
-
 
 // navigator.serviceWorker.register('service-worker.js');

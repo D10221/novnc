@@ -9,6 +9,7 @@ const defaultState = {
   url,
   viewOnly,
   scaleViewport,
+  loginCount: password && password.trim() ? 1 : 0,
 };
 
 export default defaultState;

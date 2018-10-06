@@ -29,12 +29,5 @@ Object.defineProperty(store, "onChange", {
   },
 });
 
-Object.defineProperty(store, "setState", {
-  enumerable: false,
-  value: function setState(partial) {
-    store.dispatch(actions.setState(partial));
-  },
-});
-
 export default store;
 export { bindActionCreators };
