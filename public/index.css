@@ -1,48 +1,201 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: dimgrey;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+:root {
+  --m0: 0;
+  --m1-2: 0.5rem;
+  --m1: 1rem;
+  --sans: system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  --serif: Constantia, Lucida Bright, Lucidabright, Lucida Serif, Lucida,
+    DejaVu Serif, Bitstream Vera Serif, Liberation Serif, Georgia, serif;
+  --mono: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  /* https://github.com/samme/base16-styles */
+  /* Dracula by Mike Barkmin (http://github.com/mikebarkmin) based on Dracula Theme (http://github.com/dracula) */
+  --base00: #282936;
+  --base01: #3a3c4e;
+  --base02: #4d4f68;
+  --base03: #626483;
+  --base04: #62d6e8;
+  --base05: #e9e9f4;
+  --base06: #f1f2f8;
+  --base07: #f7f7fb;
+  --base08: #ea51b2;
+  --base09: #b45bcf;
+  --base0A: #00f769;
+  --base0B: #ebff87;
+  --base0C: #a1efe4;
+  --base0D: #62d6e8;
+  --base0E: #b45bcf;
+  --base0F: #00f769;
 }
+
+.color00{
+    color: var(--base00)
+}
+.color01{
+    color: var(--base01)
+}
+.color02{
+    color: var(--base02)
+}
+.color03{
+    color: var(--base03)
+}
+.color04{
+    color: var(--base04)
+}
+.color05{
+    color: var(--base05)
+}
+.color06{
+    color: var(--base06)
+}
+.color07{
+    color: var(--base07)
+}
+.color08{
+    color: var(--base08)
+}
+.color09{
+    color: var(--base09)
+}
+.color0A{
+    color: var(--base0A)
+}
+.color0B{
+    color: var(--base0B)
+}
+.color0C{
+    color: var(--base0C)
+}
+.color0D{
+    color: var(--base0D)
+}
+.color0E{
+    color: var(--base0E)
+}
+.color0F{
+    color: var(--base0F)
+}
+/* 
+ * backgrounds
+ */
+.bg00{
+    background-color: var(--base00)
+}
+.bg01{
+    background-color: var(--base01)
+}
+.bg02{
+    background-color: var(--base02)
+}
+.bg03{
+    background-color: var(--base03)
+}
+.bg04{
+    background-color: var(--base04)
+}
+.bg05{
+    background-color: var(--base05)
+}
+.bg06{
+    background-color: var(--base06)
+}
+.bg07{
+    background-color: var(--base07)
+}
+.bg08{
+    background-color: var(--base08)
+}
+.bg09{
+    background-color: var(--base09)
+}
+.bg0A{
+    background-color: var(--base0A)
+}
+.bg0B{
+    background-color: var(--base0B)
+}
+.bg0C{
+    background-color: var(--base0C)
+}
+.bg0D{
+    background-color: var(--base0D)
+}
+.bg0E{
+    background-color: var(--base0E)
+}
+.bg0F{
+    background-color: var(--base0F)
+}
+/* Base */
 html {
-    height: 100%;
+  height: 100%;
+  font-family: var(--sans);
 }
 
-#top_bar {
-    background-color: #6e84a3;
-    color: white;
-    font: bold 12px Helvetica;
-    padding: 6px 5px 4px 5px;
-    border-bottom: 1px outset;
-}
-
-#status {
-    text-align: center;
-}
-
-#sendCtrlAltDelButton {
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    border: 1px outset;
-    padding: 5px 5px 4px 5px;
-    cursor: pointer;
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--base00);
+  color: var(--base07);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--sans);
 }
 
 #screen {
-    flex: 1; /* fill remaining space */
-    overflow: hidden;
+  flex: 1; /* fill remaining space */
+  overflow: hidden;
 }
 
-.flex-row {
-    display: flex;
-    flex-direction: row;
+/* functional */
+.m1 {
+  margin-left: var(--m1);
+  margin-right: var(--m1);
+  margin-top: var(--m1);
+  margin-bottom: var(--m1);
 }
-.space-between {
-    justify-content: space-between
+
+.mx1 {
+  margin-left: var(--m1);
+  margin-right: var(--m1);
 }
-.flex-grow {
-    flex: 1 0;
+
+.mx1-2 {
+  margin-left: var(--m1-2);
+  margin-right: var(--m1-2);
+}
+
+.my1 {
+  margin-top: var(--m1);
+  margin-bottom: var(--m1);
+}
+
+.my1-2 {
+  margin-top: var(--m1-2);
+  margin-bottom: var(--m1-2);
+}
+
+.flx-row {
+  display: flex;
+  flex-direction: row;
+}
+.jty-btwn {
+  justify-content: space-between;
+}
+.flx-10 {
+  flex: 1 0;
+}
+
+.txt-capitalize {
+  text-transform: capitalize;
+}
+.txt-uppercase {
+  text-transform: uppercase;
+}
+.txt-lowercase {
+  text-transform: lowercase;
+}
+.txt-reset {
+  text-transform: none;
 }

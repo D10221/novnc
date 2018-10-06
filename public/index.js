@@ -3,6 +3,7 @@ import RFB from "./node_modules/@novnc/novnc/core/rfb.js";
 import { fromQueryOrDefault, getUrl } from "./util.js";
 import { render, html } from "../node_modules/lit-html/lit-html.js";
 import store from "./store/index.js";
+import passwordInput from "./components/password-input.js";
 
 const App = ({
   status,
@@ -13,39 +14,33 @@ const App = ({
   credentialsRequired,
   credentialTypes,
 }) => {
-  const isConnected= !!connected;
+  const isConnected = !!connected;
   const connectionStatus = isConnected ? "connected" : "disconnected";
-  const passwordRequired = !isConnected && 
-    credentialsRequired && (credentialTypes || []).indexOf("password") !== -1;
+  const passwordRequired =
+    !isConnected &&
+    credentialsRequired &&
+    (credentialTypes || []).indexOf("password") !== -1;
   const passwordRequiredText = "Password Required:";
   const err = !isConnected && !clean;
   const errMessage =
     (passwordRequired && passwordRequiredText) ||
     (err && "Something went wrong") ||
     "";
-  const statusText = status && `status: ${status}` || "";
+  const statusText = (status && `status: ${status}`) || "";
   const reasonText = reason || "";
-  
-  const passwordInput = () => {
-    if(isConnected) return html``;
-    const onClick = () => {
-      rfb.sendCredentials({
-        password: document.getElementById("password").value,
-      });
-    };
-    return html`<div>
-      <label>Password</label>
-      <input id="password" type="password" />
-      <button @click=${onClick}> Submit </button>
-    </div>`;
-  };
+
+  const onSubmitPassword = password =>
+    rfb.sendCredentials({
+      password,
+    });
+
   return html`
-  <div id="toolbar" class="flex-row space-between">
-    <div id="status" class="">${desktopName} ${connectionStatus} ${errMessage} ${statusText} ${reasonText}</div>
-    <div class="flex-grow"></div>
-    ${passwordInput()}
+  <div class="flx-row jty-btwn m1">
+    <div class="">${desktopName} ${connectionStatus} ${errMessage} ${statusText} ${reasonText}</div>
+    <div class="flx-10"></div>
+    ${passwordInput({ submit: onSubmitPassword, hide: isConnected })}
   </div>
-  <div id="screen" class="flex-10"></div>`;
+  <div id="screen" class="flx-10"></div>`;
 };
 
 store.subscribe(() => {
@@ -62,7 +57,6 @@ const password = fromQueryOrDefault("password", "");
 const url = getUrl();
 const viewOnly = fromQueryOrDefault("view_only", false);
 const scaleViewport = fromQueryOrDefault("scale", false);
-const debugEnabled = localStorage.getItem("$DEBUG") === "enabled";
 
 const rfb = new RFB(document.getElementById("screen"), url, {
   credentials: { password },
@@ -117,14 +111,10 @@ function onDesktopname(e) {
   });
 }
 
-function log(...args) {
-  debugEnabled && console.log(...args);
-}
-
 function setTitle(text) {
   document.title = `VNC: ${text}`;
 }
 
-window.$NoVnc = rfb;
+window.$noVnc = rfb;
 
 // navigator.serviceWorker.register('service-worker.js');
