@@ -1,120 +1,33 @@
-// RFB holds the API to connect and communicate with a VNC server
-import RFB from "./node_modules/@novnc/novnc/core/rfb.js";
-import { fromQueryOrDefault, getUrl } from "./util.js";
-import { render, html } from "../node_modules/lit-html/lit-html.js";
+import { render } from "../node_modules/lit-html/lit-html.js";
 import store from "./store/index.js";
-import passwordInput from "./components/password-input.js";
+import App from "./app.js";
+import Rfb from "./rfb.js";
+let rfb;
 
-const App = ({
-  status,
-  reason,
-  desktopName,
-  connected,
-  clean,
-  credentialsRequired,
-  credentialTypes,
-}) => {
-  const isConnected = !!connected;
-  const connectionStatus = isConnected ? "connected" : "disconnected";
-  const passwordRequired =
-    !isConnected &&
-    credentialsRequired &&
-    (credentialTypes || []).indexOf("password") !== -1;
-  const passwordRequiredText = "Password Required:";
-  const err = !isConnected && !clean;
-  const errMessage =
-    (passwordRequired && passwordRequiredText) ||
-    (err && "Something went wrong") ||
-    "";
-  const statusText = (status && `status: ${status}`) || "";
-  const reasonText = reason || "";
-
-  const onSubmitPassword = password =>
-    rfb.sendCredentials({
-      password,
-    });
-
-  return html`
-  <div class="flx-row jty-btwn m1">
-    <div class="">${desktopName} ${connectionStatus} ${errMessage} ${statusText} ${reasonText}</div>
-    <div class="flx-10"></div>
-    ${passwordInput({ submit: onSubmitPassword, hide: isConnected })}
-  </div>
-  <div id="screen" class="flx-10"></div>`;
+const sendCredentials = password => {
+   rfb.sendCredentials({ password });
 };
 
-store.subscribe(() => {
-  const state = store.getState();
+store.onChange(state => {
   setTitle(
     `${state.connected ? "connected" : "disconnected"} ${state.desktopName ||
       ""}`,
   );
-  render(App(state), document.body);
+  render(App({ ...state, sendCredentials }), document.body);
 });
-store.dispatch({ type: "!START" });
-
-const password = fromQueryOrDefault("password", "");
-const url = getUrl();
-const viewOnly = fromQueryOrDefault("view_only", false);
-const scaleViewport = fromQueryOrDefault("scale", false);
-
-const rfb = new RFB(document.getElementById("screen"), url, {
-  credentials: { password },
-});
-// Set parameters that can be changed on an active connection
-rfb.viewOnly = viewOnly;
-rfb.scaleViewport = scaleViewport;
-// Add listeners to important events from the RFB module
-rfb.addEventListener("connect", onConnect);
-rfb.addEventListener("disconnect", onDisconnect);
-rfb.addEventListener("credentialsrequired", onCredentialsRequired);
-rfb.addEventListener("securityfailure", onSecurityFailure);
-rfb.addEventListener("desktopname", onDesktopname);
-
-/**
- * When this function is called we have successfully connected to a server
- */
-function onConnect() {
-  store.setState({ connected: true });
-}
-
-/** */
-function onDisconnect(e) {
-  console.log(e.detail);
-  store.setState({
-    connected: false,
-    clean: e.detail.clean,
-  });
-}
-/** */
-function onCredentialsRequired(e) {
-  const { detail } = e;
-  store.setState({
-    credentialsRequired: true,
-    credentialTypes: detail.types,
-  });
-}
-/** No need to set connected, onDisconnect is called after */
-function onSecurityFailure(e) {
-  const { detail } = e;
-  const { reason, status } = detail;
-  store.setState({
-    reason,
-    status,
-    event: "securityfailure",
-  });
-}
-/** */
-function onDesktopname(e) {
-  store.setState({
-    desktopName: e.detail.name,
-  });
-}
 
 function setTitle(text) {
   document.title = `VNC: ${text}`;
 }
+// Start: initial render, or 'screen' doesn't exist
+store.dispatch({ type: "!START" });
 
-window.$noVnc = rfb;
+rfb = Rfb({
+  el: document.getElementById("screen"),
+  setState: store.setState,
+  ...store.getState()
+});
+
+
 
 // navigator.serviceWorker.register('service-worker.js');

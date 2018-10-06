@@ -32,7 +32,7 @@ Object.defineProperty(store, "onChange", {
 Object.defineProperty(store, "setState", {
   enumerable: false,
   value: function setState(partial) {
-    this.dispatch(actions.setState(partial));
+    store.dispatch(actions.setState(partial));
   },
 });
 
