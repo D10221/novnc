@@ -1,7 +1,8 @@
 :root {
-  --m0: 0;
-  --m1-2: 0.5rem;
-  --m1: 1rem;
+  --spacing-unit-zero: 0;
+  --spacing-unit-half: 0.5rem;
+  --spacing-unit-third: 0.75rem;
+  --spacing-unit: 1rem;
   --sans: system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   --serif: Constantia, Lucida Bright, Lucidabright, Lucida Serif, Lucida,
@@ -27,104 +28,108 @@
   --base0F: #00f769;
 }
 
-.color00{
-    color: var(--base00)
+.color00 {
+  color: var(--base00);
 }
-.color01{
-    color: var(--base01)
+.color01 {
+  color: var(--base01);
 }
-.color02{
-    color: var(--base02)
+.color02 {
+  color: var(--base02);
 }
-.color03{
-    color: var(--base03)
+.color03 {
+  color: var(--base03);
 }
-.color04{
-    color: var(--base04)
+.color04 {
+  color: var(--base04);
 }
-.color05{
-    color: var(--base05)
+.color05 {
+  color: var(--base05);
 }
-.color06{
-    color: var(--base06)
+.color06 {
+  color: var(--base06);
 }
-.color07{
-    color: var(--base07)
+.color07 {
+  color: var(--base07);
 }
-.color08{
-    color: var(--base08)
+.color08 {
+  color: var(--base08);
 }
-.color09{
-    color: var(--base09)
+.color09 {
+  color: var(--base09);
 }
-.color0A{
-    color: var(--base0A)
+.color0A {
+  color: var(--base0A);
 }
-.color0B{
-    color: var(--base0B)
+.color0B {
+  color: var(--base0B);
 }
-.color0C{
-    color: var(--base0C)
+.color0C {
+  color: var(--base0C);
 }
-.color0D{
-    color: var(--base0D)
+.color0D {
+  color: var(--base0D);
 }
-.color0E{
-    color: var(--base0E)
+.color0E {
+  color: var(--base0E);
 }
-.color0F{
-    color: var(--base0F)
+.color0F {
+  color: var(--base0F);
 }
 /* 
  * backgrounds
  */
-.bg00{
-    background-color: var(--base00)
+.bg00 {
+  background-color: var(--base00);
 }
-.bg01{
-    background-color: var(--base01)
+.bg01 {
+  background-color: var(--base01);
 }
-.bg02{
-    background-color: var(--base02)
+.bg02 {
+  background-color: var(--base02);
 }
-.bg03{
-    background-color: var(--base03)
+.bg03 {
+  background-color: var(--base03);
 }
-.bg04{
-    background-color: var(--base04)
+.bg04 {
+  background-color: var(--base04);
 }
-.bg05{
-    background-color: var(--base05)
+.bg05 {
+  background-color: var(--base05);
 }
-.bg06{
-    background-color: var(--base06)
+.bg06 {
+  background-color: var(--base06);
 }
-.bg07{
-    background-color: var(--base07)
+.bg07 {
+  background-color: var(--base07);
 }
-.bg08{
-    background-color: var(--base08)
+.bg08 {
+  background-color: var(--base08);
 }
-.bg09{
-    background-color: var(--base09)
+.bg09 {
+  background-color: var(--base09);
 }
-.bg0A{
-    background-color: var(--base0A)
+.bg0A {
+  background-color: var(--base0A);
 }
-.bg0B{
-    background-color: var(--base0B)
+.bg0B {
+  background-color: var(--base0B);
 }
-.bg0C{
-    background-color: var(--base0C)
+.bg0C {
+  background-color: var(--base0C);
 }
-.bg0D{
-    background-color: var(--base0D)
+.bg0D {
+  background-color: var(--base0D);
 }
-.bg0E{
-    background-color: var(--base0E)
+.bg0E {
+  background-color: var(--base0E);
 }
-.bg0F{
-    background-color: var(--base0F)
+.bg0F {
+  background-color: var(--base0F);
+}
+/* border*/
+.border-pill {
+  border-radius: 999px;
 }
 /* Base */
 html {
@@ -150,30 +155,30 @@ body {
 
 /* functional */
 .m1 {
-  margin-left: var(--m1);
-  margin-right: var(--m1);
-  margin-top: var(--m1);
-  margin-bottom: var(--m1);
+  margin-left: var(--spacing-unit);
+  margin-right: var(--spacing-unit);
+  margin-top: var(--spacing-unit);
+  margin-bottom: var(--spacing-unit);
 }
 
-.mx1 {
-  margin-left: var(--m1);
-  margin-right: var(--m1);
+.mx {
+  margin-left: var(--spacing-unit);
+  margin-right: var(--spacing-unit);
 }
 
-.mx1-2 {
-  margin-left: var(--m1-2);
-  margin-right: var(--m1-2);
+.mx-half {
+  margin-left: var(--spacing-unit-half);
+  margin-right: var(--spacing-unit-half);
 }
 
-.my1 {
-  margin-top: var(--m1);
-  margin-bottom: var(--m1);
+.my {
+  margin-top: var(--spacing-unit);
+  margin-bottom: var(--spacing-unit);
 }
 
-.my1-2 {
-  margin-top: var(--m1-2);
-  margin-bottom: var(--m1-2);
+.my-half {
+  margin-top: var(--spacing-unit-half);
+  margin-bottom: var(--spacing-unit-half);
 }
 
 .flx-row {
@@ -198,4 +203,35 @@ body {
 }
 .txt-reset {
   text-transform: none;
+}
+
+/* padding */
+.p {
+  padding: var(--spacing-unit);
+}
+.px {
+  padding-left: var(--spacing-unit);
+  padding-right: var(--spacing-unit);
+}
+.px-half {
+  padding-left: var(--spacing-unit-half);
+  padding-right: var(--spacing-unit-half);
+}
+.py {
+  padding-top: var(--spacing-unit);
+  padding-bottom: var(--spacing-unit);
+}
+.py-half {
+  padding-top: var(--spacing-unit-half);
+  padding-bottom: var(--spacing-unit-half);
+}
+.py-third {
+  padding-top: var(--spacing-unit-third);
+  padding-bottom: var(--spacing-unit-third);
+}
+.center-content {
+    align-content: center;
+}
+.center-items {
+    align-items: center;
 }

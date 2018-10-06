@@ -14,9 +14,9 @@ export default function({ disabled, submit, submitLabel, label, id, hide }) {
   };
   return !!hide
     ? html`` 
-    : html`<div class="flx-row mx1">
-      <label class="mx1-2">${label}</label>
+    : html`<div class="flx-row mx center-items">
+      <label class="mx-half">${label}</label>
       <input id=${id} type="password" @keyup=${onKeyup} ?disabled=${disabled} />
-      <button class="mx1-2" @click=${onClick} ?disabled=${disabled}>${submitLabel} </button>
+      <button class="mx-half bg03 color07 border-pill px py-half" @click=${onClick} ?disabled=${disabled}>${submitLabel} </button>
     </div>`;
 }
