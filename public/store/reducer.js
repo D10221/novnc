@@ -4,7 +4,8 @@ export const STORE_KEY = "root";
 
 export const actionTypes = {
   SET_STATE: `${STORE_KEY}/set-State`,
-  SEND_CREDENTIALS: `${STORE_KEY}/SEND_CREDENTIALS`,
+  ON_SEND_CREDENTIALS: `${STORE_KEY}/ON_SEND_CREDENTIALS`,
+  CLOSE_PANEL: `${STORE_KEY}/CLOSE_PANEL`,
 };
 
 export const actions = {
@@ -12,15 +13,24 @@ export const actions = {
     type: actionTypes.SET_STATE,
     payload,
   }),
-  sendCredentials: () => ({
-    type: actionTypes.SEND_CREDENTIALS,
+  onSendCredentials: () => ({
+    type: actionTypes.ON_SEND_CREDENTIALS,
+  }),
+  closePanel: () => ({
+    type: actionTypes.CLOSE_PANEL,
   }),
 };
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
     case actionTypes.SET_STATE: {
-      const { connected, credentialsRequired, credentialTypes, clean, loginCount } = state;
+      const {
+        connected,
+        credentialsRequired,
+        credentialTypes,
+        clean,
+        loginCount,
+      } = state;
       const passwordRequired =
         !connected &&
         credentialsRequired &&
@@ -33,14 +43,20 @@ export default function reducer(state = defaultState, action) {
         error,
       };
     }
-    case actionTypes.SEND_CREDENTIALS: {
+    case actionTypes.ON_SEND_CREDENTIALS: {
       return {
         ...state,
         error: undefined,
-        clean: true,        
+        clean: true,
         reason: undefined,
         status: 0,
         loginCount: state.loginCount + 1,
+      };
+    }
+    case actionTypes.CLOSE_PANEL: {
+      return {
+        ...state,
+        panelOpen: false,
       };
     }
     default:

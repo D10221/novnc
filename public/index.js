@@ -1,12 +1,12 @@
 import { render } from "../node_modules/lit-html/lit-html.js";
-import store, { actions } from "./store/index.js";
+import store, { actions, bindActions } from "./store/index.js";
 import App from "./app.js";
 import Rfb from "./rfb.js";
 let rfb;
 
 /** user driver login */
 const sendCredentials = password => {
-  store.dispatch(actions.sendCredentials())
+  store.dispatch(actions.onSendCredentials());
   rfb.sendCredentials({ password });
 };
 
@@ -16,7 +16,7 @@ store.onChange(state => {
       ""}`,
   );
   render(
-    App({ ...state, sendCredentials, setState: actions.setState }),
+    App({ ...state, sendCredentials, ...bindActions(actions, store.dispatch) }),
     document.body,
   );
 });
@@ -29,7 +29,7 @@ store.dispatch({ type: "!START" });
 
 rfb = Rfb({
   el: document.getElementById("screen"),
-  setState: (payload)=> store.dispatch(actions.setState(payload)),
+  setState: payload => store.dispatch(actions.setState(payload)),
   ...store.getState(),
 });
 

@@ -10,6 +10,7 @@ const defaultState = {
   viewOnly,
   scaleViewport,
   loginCount: password && password.trim() ? 1 : 0,
+  panelOpen: true
 };
 
 export default defaultState;

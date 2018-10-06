@@ -212,6 +212,9 @@ body {
 .p {
   padding: var(--spacing-unit);
 }
+.p-half {
+  padding: calc(var(--spacing-unit) * 0.5);
+}
 .px {
   padding-left: var(--spacing-unit);
   padding-right: var(--spacing-unit);
