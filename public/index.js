@@ -6,7 +6,7 @@ let rfb;
 
 /** user driver login */
 const sendCredentials = password => {
-  store.dispatch(actions.loginCount())
+  store.dispatch(actions.sendCredentials())
   rfb.sendCredentials({ password });
 };
 

@@ -13,7 +13,7 @@ const App = ({
   const connectionStatus = !!connected ? "connected" : "disconnected";
   const passwordRequiredText = "Password Required:";
   const errMessage =
-    (passwordRequired && passwordRequiredText) ||
+    (!connected && passwordRequired && passwordRequiredText) ||
     (error && "Something went wrong") ||
     "";
   const reasonText = reason || "";
@@ -21,9 +21,10 @@ const App = ({
   return html`
     <div class="flex-row justify-between border-bottom border-solid border-0A border-box py">
     ${Label({
-          content: `${desktopName} ${connectionStatus} ${errMessage} ${reasonText}`,
-          classes: ["flex", "center-items"]
-        })}
+      content: `${desktopName ||
+        ""} ${connectionStatus} ${errMessage} ${reasonText}`,
+      classes: ["flex", "center-items"],
+    })}
       <div class="flex-10"></div>
       ${passwordInput({ submit: sendCredentials, hide: !!connected })}
     </div>

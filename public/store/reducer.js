@@ -4,7 +4,7 @@ export const STORE_KEY = "root";
 
 export const actionTypes = {
   SET_STATE: `${STORE_KEY}/set-State`,
-  LOGIN_COUNT: `${STORE_KEY}/LOGIN_COUNT`,
+  SEND_CREDENTIALS: `${STORE_KEY}/SEND_CREDENTIALS`,
 };
 
 export const actions = {
@@ -12,8 +12,8 @@ export const actions = {
     type: actionTypes.SET_STATE,
     payload,
   }),
-  loginCount: () => ({
-    type: actionTypes.LOGIN_COUNT,
+  sendCredentials: () => ({
+    type: actionTypes.SEND_CREDENTIALS,
   }),
 };
 
@@ -33,9 +33,13 @@ export default function reducer(state = defaultState, action) {
         error,
       };
     }
-    case actionTypes.LOGIN_COUNT: {
+    case actionTypes.SEND_CREDENTIALS: {
       return {
         ...state,
+        error: undefined,
+        clean: true,        
+        reason: undefined,
+        status: 0,
         loginCount: state.loginCount + 1,
       };
     }
