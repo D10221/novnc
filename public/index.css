@@ -1,13 +1,15 @@
 :root {
-  --spacing-unit-zero: 0;
-  --spacing-unit-half: 0.5rem;
-  --spacing-unit-third: 0.75rem;
+  /* spacing */
   --spacing-unit: 1rem;
+  /* border */
+  --border-unit: 1px;
+  /* fonts */
   --sans: system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   --serif: Constantia, Lucida Bright, Lucidabright, Lucida Serif, Lucida,
     DejaVu Serif, Bitstream Vera Serif, Liberation Serif, Georgia, serif;
   --mono: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  /* colors */
   /* https://github.com/samme/base16-styles */
   /* Dracula by Mike Barkmin (http://github.com/mikebarkmin) based on Dracula Theme (http://github.com/dracula) */
   --base00: #282936;
@@ -127,16 +129,11 @@
 .bg0F {
   background-color: var(--base0F);
 }
-/* border*/
-.border-pill {
-  border-radius: 999px;
-}
 /* Base */
 html {
   height: 100%;
   font-family: var(--sans);
 }
-
 body {
   margin: 0;
   padding: 0;
@@ -147,61 +144,67 @@ body {
   flex-direction: column;
   font-family: var(--sans);
 }
-
 #screen {
   flex: 1; /* fill remaining space */
   overflow: hidden;
 }
-
-/* functional */
+.m0 {
+    margin:0;
+}
+/* margin */
 .m1 {
   margin-left: var(--spacing-unit);
   margin-right: var(--spacing-unit);
   margin-top: var(--spacing-unit);
   margin-bottom: var(--spacing-unit);
 }
-
 .mx {
   margin-left: var(--spacing-unit);
   margin-right: var(--spacing-unit);
 }
-
 .mx-half {
-  margin-left: var(--spacing-unit-half);
-  margin-right: var(--spacing-unit-half);
+  margin-left: calc(var(--spacing-unit) * 0.5);
+  margin-right: calc(var(--spacing-unit) * 0.5);
 }
-
 .my {
   margin-top: var(--spacing-unit);
   margin-bottom: var(--spacing-unit);
 }
-
 .my-half {
-  margin-top: var(--spacing-unit-half);
-  margin-bottom: var(--spacing-unit-half);
+  margin-top: calc(var(--spacing-unit) * 0.5);
+  margin-bottom: calc(var(--spacing-unit) * 0.5);
 }
-
-.flx-row {
+.mb {
+  margin-bottom: var(--spacing-unit);
+}
+.mb-half {
+  margin-bottom: calc(var(--spacing-unit) * 0.5);
+}
+/* Flex */
+.flex {
+  display: flex;
+}
+.flex-row {
   display: flex;
   flex-direction: row;
 }
-.jty-btwn {
+.justify-between {
   justify-content: space-between;
 }
-.flx-10 {
+.flex-10 {
   flex: 1 0;
 }
-
-.txt-capitalize {
+/* Text */
+.text-capitalize {
   text-transform: capitalize;
 }
-.txt-uppercase {
+.text-uppercase {
   text-transform: uppercase;
 }
-.txt-lowercase {
+.text-lowercase {
   text-transform: lowercase;
 }
-.txt-reset {
+.text-reset {
   text-transform: none;
 }
 
@@ -214,24 +217,122 @@ body {
   padding-right: var(--spacing-unit);
 }
 .px-half {
-  padding-left: var(--spacing-unit-half);
-  padding-right: var(--spacing-unit-half);
+  padding-left: calc(var(--spacing-unit) * 0.5);
+  padding-right: calc(var(--spacing-unit) * 0.5);
 }
 .py {
   padding-top: var(--spacing-unit);
   padding-bottom: var(--spacing-unit);
 }
 .py-half {
-  padding-top: var(--spacing-unit-half);
-  padding-bottom: var(--spacing-unit-half);
+  padding-top: calc(var(--spacing-unit) * 0.5);
+  padding-bottom: calc(var(--spacing-unit) * 0.5);
 }
 .py-third {
-  padding-top: var(--spacing-unit-third);
-  padding-bottom: var(--spacing-unit-third);
+  padding-top: calc(var(--spacing-unit) * 0.75);
+  padding-bottom: calc(var(--spacing-unit) * 0.75);
 }
+.pb-0 {
+  padding-bottom: 0;
+}
+.pb {
+  padding-bottom: var(--spacing-unit);
+}
+.pb-half {
+  padding-bottom: calc(var(--spacing-unit) * 0.5);
+}
+.pb-third {
+  padding-bottom: calc(var(--spacing-unit) * 0.75);
+}
+.pb-twice {
+  padding-bottom: calc(var(--spacing-unit) * 2);
+}
+/* Alignment */
 .center-content {
-    align-content: center;
+  align-content: center;
 }
 .center-items {
-    align-items: center;
+  align-items: center;
+}
+/* border */
+.border-pill {
+  border-radius: 999px;
+}
+.border-color-00 {
+  border-color: var(--base00);
+}
+.border-color-01 {
+  border-color: var(--base01);
+}
+.border-color-02 {
+  border-color: var(--base02);
+}
+.border-color-03 {
+  border-color: var(--base03);
+}
+.border-color-04 {
+  border-color: var(--base04);
+}
+.border-color-05 {
+  border-color: var(--base05);
+}
+.border-color-06 {
+  border-color: var(--base06);
+}
+.border-color-07 {
+  border-color: var(--base07);
+}
+.border-color-08 {
+  border-color: var(--base08);
+}
+.border-color-09 {
+  border-color: var(--base09);
+}
+.border-color-0A {
+  border-color: var(--base0A);
+}
+.border-color-0B {
+  border-color: var(--base0B);
+}
+.border-color-0C {
+  border-color: var(--base0C);
+}
+.border-color-0D {
+  border-color: var(--base0D);
+}
+.border-color-0E {
+  border-color: var(--base0E);
+}
+.border-color-0F {
+  border-color: var(--base0F);
+}
+.border-solid {
+  border-style: solid;
+}
+.border-bottom-0 {
+  border-bottom-width: 0;
+}
+.border-bottom-x2 {
+  border-bottom-width: calc(var(--border-unit) * 2);
+}
+.border-bottom-x4 {
+  border-bottom-width: calc(var(--border-unit) * 4);
+}
+.border-bottom-x8 {
+  border-bottom-width: calc(var(--border-unit) * 8);
+}
+.border-bottom {
+  border-bottom-width: var(--border-unit);
+}
+.border-box {
+  box-sizing: border-box;
+}
+.content-box {
+  box-sizing: content-box;
+}
+.border-inherit {
+  box-sizing: inherit;
+}
+.border-unset {
+  box-sizing: unset;
 }
