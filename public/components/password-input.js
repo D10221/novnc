@@ -18,6 +18,6 @@ export default function({ disabled, submit, submitLabel, label, id, hide }) {
     : html`<div class="flex-row mx center-items">
       ${Label({ content: label })}
       <input id=${id} type="password" @keyup=${onKeyup} ?disabled=${disabled} />
-      <button class="mx-half bg03 color07 border-pill px py-half" @click=${onClick} ?disabled=${disabled}>${submitLabel} </button>
+      <button class="mx-half bg03 color07 border-roundish px py-half" @click=${onClick} ?disabled=${disabled}>${submitLabel} </button>
     </div>`;
 }

@@ -1,14 +1,16 @@
 import passwordInput from "./components/password-input.js";
 import { html } from "../node_modules/lit-html/lit-html.js";
 import Label from "./components/label.js";
+import classNames from "./class-names.js";
+import icon from "./components/icon.js";
+import IconButton from "./components/icon-button.js";
 
 const ClosePanelButton = ({ hide, onClick }) => {
-  return !!hide
-    ? html``
-    : html`
-  <button class="border-pill bg07 color08  mx" @click=${onClick}>
-    <i class="material-icons">close</i>
-  </button>`;
+  return html`${IconButton({
+    icon: icon("close"),
+    onClick,
+    className: classNames("bg07 color08", hide && "display-none"),
+  })}`;
 };
 
 const App = ({
@@ -28,23 +30,23 @@ const App = ({
     (error && "Something went wrong") ||
     "";
   const reasonText = reason || "";
-  const Panel = () => {
-    return !panelOpen ? (
-      html``
-    ) : html`
-    <div class="flex-row justify-between border-bottom border-solid border-0A border-box py">
-    ${Label({
-      content: `${desktopName ||
-        ""} ${connectionStatus} ${errMessage} ${reasonText}`,
-      classes: ["flex", "center-items"],
-    })}
-    <div class="flex-10" />
-    ${passwordInput({ submit: sendCredentials, hide: !!connected })}
-    ${ClosePanelButton({ hide: !connected, onClick: closePanel })}
-  </div>`;
-  };
+  const status = `${desktopName ||
+    ""} ${connectionStatus} ${errMessage} ${reasonText}`;
+
+  const classes = classNames(
+    "flex-wrap justify-between py mx",
+    !panelOpen && "display-none",
+  );
   return html`
-    ${Panel()}
-    <div id="screen" class="flex-10"></div>`;
+  <div class=${classes}>
+  ${Label({
+    content: status,
+    classes: ["flex", "center-items"],
+  })}
+  <div class="flex-10"><!--spacer --></div> 
+  ${passwordInput({ submit: sendCredentials, hide: !!connected })}
+  <div class="flex-10"><!--spacer --></div> 
+  ${ClosePanelButton({ onClick: closePanel })}
+</div>`;
 };
 export default App;

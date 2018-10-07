@@ -2,7 +2,12 @@ import { render } from "../node_modules/lit-html/lit-html.js";
 import store, { actions, bindActions } from "./store/index.js";
 import App from "./app.js";
 import Rfb from "./rfb.js";
-let rfb;
+
+const rfb = Rfb({
+  el: document.getElementById("screen"),
+  ...bindActions(actions, store.dispatch) ,
+  ...store.getState(),
+});
 
 /** user driver login */
 const sendCredentials = password => {
@@ -17,7 +22,7 @@ store.onChange(state => {
   );
   render(
     App({ ...state, sendCredentials, ...bindActions(actions, store.dispatch) }),
-    document.body,
+    document.getElementById("app"),
   );
 });
 
@@ -27,10 +32,6 @@ function setTitle(text) {
 // Start: initial render, or 'screen' doesn't exist
 store.dispatch({ type: "!START" });
 
-rfb = Rfb({
-  el: document.getElementById("screen"),
-  setState: payload => store.dispatch(actions.setState(payload)),
-  ...store.getState(),
-});
+
 
 // navigator.serviceWorker.register('service-worker.js');
